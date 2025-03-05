@@ -1,0 +1,54 @@
+INSERT INTO Users (Email, Password, ProfileImage, Bio, UserType)
+VALUES
+('learner1@example.com', 'password1', 'image1.jpg', 'Bio for Learner 1', 'Learner'),
+('learner2@example.com', 'password2', 'image2.jpg', 'Bio for Learner 2', 'Learner'),
+('instructor1@example.com', 'password3', 'image3.jpg', 'Bio for Instructor 1', 'Instructor'),
+('instructor2@example.com', 'password4', 'image4.jpg', 'Bio for Instructor 2', 'Instructor');
+
+INSERT INTO Categories (CategoryName)
+VALUES
+('Programming'),
+('Data Science'),
+('Design'),
+('Business');
+
+INSERT INTO Courses (Title, Description, CategoryID, Level, Price, Discount, TotalDuration, InstructorID)
+VALUES
+('Python for Beginners', 'Learn Python from scratch', 1, 'Beginner', 49.99, 0, 300, 3),
+('Advanced Python', 'Master advanced Python concepts', 1, 'Advanced', 99.99, 10, 400, 3),
+('Machine Learning Basics', 'Introduction to ML', 2, 'Intermediate', 79.99, 0, 350, 4),
+('UI/UX Design', 'Learn design principles', 3, 'Beginner', 59.99, 5, 250, 4);
+
+INSERT INTO Lessons (CourseID, Title, VideoFile, Duration)
+VALUES
+(1, 'Introduction to Python', 'intro_python.mp4', 30),
+(1, 'Variables and Data Types', 'variables.mp4', 25),
+(2, 'Decorators in Python', 'decorators.mp4', 40),
+(3, 'What is Machine Learning?', 'ml_intro.mp4', 35),
+(4, 'Design Principles', 'design_principles.mp4', 20);
+
+INSERT INTO Enrollments (LearnerID, CourseID, Progress)
+VALUES
+(1, 1, 50), 
+(1, 2, 25), 
+(2, 1, 100), 
+(2, 3, 75); 
+
+INSERT INTO Reviews (LearnerID, CourseID, Rating, Comment)
+VALUES
+(1, 1, 5, 'Great course for beginners!'),
+(2, 1, 4, 'Very helpful, but could use more examples.'),
+(1, 2, 3, 'Too advanced for me.'),
+(2, 3, 5, 'Excellent introduction to ML.');
+
+INSERT INTO Bookmarks (LearnerID, CourseID)
+VALUES
+(1, 1), 
+(1, 3), 
+(2, 2); 
+
+INSERT INTO Revenue (CourseID, InstructorID, Amount)
+VALUES
+(1, 3, 499.90), 
+(2, 3, 899.91), 
+(3, 4, 799.90); 

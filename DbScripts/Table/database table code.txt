@@ -1,0 +1,73 @@
+-- user table
+CREATE TABLE Users (
+    UserID INT PRIMARY KEY IDENTITY(1,1),
+    Email NVARCHAR(255) NOT NULL UNIQUE,
+    Password NVARCHAR(255) NOT NULL,
+    ProfileImage NVARCHAR(255),
+    Bio NVARCHAR(MAX),
+    UserType NVARCHAR(50) CHECK (UserType IN ('Learner', 'Instructor')) NOT NULL
+);
+
+-- category table
+CREATE TABLE Categories (
+    CategoryID INT PRIMARY KEY IDENTITY(1,1),
+    CategoryName NVARCHAR(255) NOT NULL
+);
+-- course table
+CREATE TABLE Courses (
+    CourseID INT PRIMARY KEY IDENTITY(1,1),
+    Title NVARCHAR(255) NOT NULL,
+    Description NVARCHAR(MAX),
+    CategoryID INT FOREIGN KEY REFERENCES Categories(CategoryID),
+    Level NVARCHAR(50),
+    Price DECIMAL(10, 2) NOT NULL,
+    Discount DECIMAL(5, 2) DEFAULT 0,
+    TotalDuration INT,
+    InstructorID INT FOREIGN KEY REFERENCES Users(UserID)
+);
+
+-- lesson table 
+CREATE TABLE Lessons (
+    LessonID INT PRIMARY KEY IDENTITY(1,1),
+    CourseID INT FOREIGN KEY REFERENCES Courses(CourseID) ON DELETE CASCADE,
+    Title NVARCHAR(255) NOT NULL,
+    VideoFile NVARCHAR(255) NOT NULL,
+    Duration INT NOT NULL
+);
+
+-- enrollment table
+CREATE TABLE Enrollments (
+    EnrollmentID INT PRIMARY KEY IDENTITY(1,1),
+    LearnerID INT FOREIGN KEY REFERENCES Users(UserID) ON DELETE CASCADE,
+    CourseID INT FOREIGN KEY REFERENCES Courses(CourseID) ON DELETE CASCADE,
+    EnrollmentDate DATETIME DEFAULT GETDATE(),
+    Progress INT DEFAULT 0
+);
+
+-- review table
+CREATE TABLE Reviews (
+    ReviewID INT PRIMARY KEY IDENTITY(1,1),
+    LearnerID INT FOREIGN KEY REFERENCES Users(UserID) ON DELETE CASCADE,
+    CourseID INT FOREIGN KEY REFERENCES Courses(CourseID) ON DELETE CASCADE,
+    Rating INT CHECK (Rating BETWEEN 1 AND 5),
+    Comment NVARCHAR(MAX),
+    ReviewDate DATETIME DEFAULT GETDATE()
+);
+
+-- bookmark table 
+CREATE TABLE Bookmarks (
+    BookmarkID INT PRIMARY KEY IDENTITY(1,1),
+    LearnerID INT FOREIGN KEY REFERENCES Users(UserID) ON DELETE CASCADE,
+    CourseID INT FOREIGN KEY REFERENCES Courses(CourseID) ON DELETE CASCADE,
+    BookmarkDate DATETIME DEFAULT GETDATE()
+);
+
+
+-- revenue table 
+CREATE TABLE Revenue (
+    RevenueID INT PRIMARY KEY IDENTITY(1,1),
+    CourseID INT FOREIGN KEY REFERENCES Courses(CourseID) ON DELETE CASCADE,
+    InstructorID INT FOREIGN KEY REFERENCES Users(UserID) ON DELETE CASCADE,
+    Amount DECIMAL(10, 2) NOT NULL,
+    RevenueDate DATETIME DEFAULT GETDATE()
+);

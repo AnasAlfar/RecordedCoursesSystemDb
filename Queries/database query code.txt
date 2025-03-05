@@ -1,0 +1,43 @@
+Database Queries 
+
+
+1. Retrieve Courses by Category: 
+o Write a query to fetch all courses within a selected category, including title, price, and 
+ratings. 
+
+
+SELECT Title, Price, AVG(Rating) AS AverageRating
+FROM Courses
+LEFT JOIN Reviews ON Courses.CourseID = Reviews.CourseID
+WHERE CategoryID = 1
+GROUP BY Courses.CourseID, Title, Price;
+
+2. Search Courses: 
+o Implement a query to search courses by keyword in the title or description.
+
+SELECT Title, Description, Price
+FROM Courses
+WHERE Title LIKE '%Python%' OR Description LIKE '%Python%';
+
+
+3. Track Learner Progress: 
+o Create a query to retrieve the progress of a learner in a specific course, including 
+completed lessons and remaining lessons.
+
+SELECT Lessons.LessonID, Lessons.Title, 
+       CASE WHEN Enrollments.Progress >= Lessons.LessonID THEN 'Completed' ELSE 'Pending' END AS Status
+FROM Lessons
+JOIN Enrollments ON Lessons.CourseID = Enrollments.CourseID
+WHERE Enrollments.LearnerID = 1 AND Enrollments.CourseID = 1;
+
+
+4. Top-Rated Courses: 
+o Write a query to identify the top-rated courses based on average ratings and enrollment 
+numbers.
+
+SELECT Courses.Title, AVG(Reviews.Rating) AS AverageRating, COUNT(Enrollments.EnrollmentID) AS Enrollments
+FROM Courses
+JOIN Reviews ON Courses.CourseID = Reviews.CourseID
+JOIN Enrollments ON Courses.CourseID = Enrollments.CourseID
+GROUP BY Courses.CourseID, Courses.Title
+ORDER BY AverageRating DESC, Enrollments DESC;

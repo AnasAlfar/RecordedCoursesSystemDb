@@ -1,0 +1,110 @@
+Stored Procedures 
+
+1. Enroll Learner in Course: 
+o Write a stored procedure to handle learner enrollments, ensuring the course exists and 
+the learner has an active account.
+
+CREATE PROCEDURE EnrollLearner
+    @LearnerID INT,
+    @CourseID INT
+AS
+BEGIN
+    -- Check if the learner and course exist
+    IF EXISTS (SELECT 1 FROM Users WHERE UserID = @LearnerID AND UserType = 'Learner')
+    AND EXISTS (SELECT 1 FROM Courses WHERE CourseID = @CourseID)
+    BEGIN
+        -- Insert the enrollment record
+        INSERT INTO Enrollments (LearnerID, CourseID)
+        VALUES (@LearnerID, @CourseID);
+        PRINT 'Learner enrolled successfully!';
+    END
+    ELSE
+    BEGIN
+        PRINT 'Invalid Learner or Course ID. Enrollment failed.';
+    END
+END;
+
+EXEC EnrollLearner @LearnerID = 1, @CourseID = 3;
+
+
+2. Add a New Course: 
+o Implement a stored procedure for instructors to add courses, including lessons and 
+metadata. 
+
+CREATE PROCEDURE AddCourse
+    @Title NVARCHAR(255),
+    @Description NVARCHAR(MAX),
+    @CategoryID INT,
+    @Level NVARCHAR(50),
+    @Price DECIMAL(10, 2),
+    @InstructorID INT
+AS
+BEGIN
+    -- Check if the instructor exists
+    IF EXISTS (SELECT 1 FROM Users WHERE UserID = @InstructorID AND UserType = 'Instructor')
+    BEGIN
+        -- Insert the new course
+        INSERT INTO Courses (Title, Description, CategoryID, Level, Price, InstructorID)
+        VALUES (@Title, @Description, @CategoryID, @Level, @Price, @InstructorID);
+        PRINT 'Course added successfully!';
+    END
+    ELSE
+    BEGIN
+        PRINT 'Invalid Instructor ID. Course addition failed.';
+    END
+END;
+
+
+
+EXEC AddCourse @Title = 'SQL for Beginners', @Description = 'Learn SQL from scratch', @CategoryID = 1, @Level = 'Beginner', @Price = 39.99, @InstructorID = 3;
+
+
+3. Generate Revenue Report: 
+o Create a stored procedure to generate a report of total revenue per course and 
+instructor within a specific timeframe.
+
+CREATE PROCEDURE GenerateRevenueReport
+    @StartDate DATETIME,
+    @EndDate DATETIME
+AS
+BEGIN
+    SELECT Courses.Title AS CourseTitle, Users.Email AS InstructorEmail, SUM(Revenue.Amount) AS TotalRevenue
+    FROM Revenue
+    JOIN Courses ON Revenue.CourseID = Courses.CourseID
+    JOIN Users ON Revenue.InstructorID = Users.UserID
+    WHERE RevenueDate BETWEEN @StartDate AND @EndDate
+    GROUP BY Courses.Title, Users.Email;
+END;
+
+EXEC GenerateRevenueReport 
+    @StartDate = '2025-02-27', 
+    @EndDate = '2025-02-28';
+
+
+4. Manage Discounts: 
+o Write a stored procedure to apply or update discounts on courses based on promotional 
+campaigns.
+
+
+CREATE PROCEDURE ManageDiscounts
+    @CourseID INT,
+    @Discount DECIMAL(5, 2)
+AS
+BEGIN
+    -- Check if the course exists
+    IF EXISTS (SELECT 1 FROM Courses WHERE CourseID = @CourseID)
+    BEGIN
+        -- Update the discount for the course
+        UPDATE Courses
+        SET Discount = @Discount
+        WHERE CourseID = @CourseID;
+        PRINT 'Discount updated successfully!';
+    END
+    ELSE
+    BEGIN
+        PRINT 'Invalid Course ID. Discount update failed.';
+    END
+END;
+
+
+EXEC ManageDiscounts @CourseID = 1, @Discount = 15;
